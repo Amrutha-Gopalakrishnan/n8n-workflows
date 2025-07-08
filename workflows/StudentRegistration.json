@@ -1,0 +1,177 @@
+{
+  "name": "Student Registration",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "student-register",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "6b77f7d6-18e4-42c0-bfb2-cb203f50b642",
+      "name": "Webhook",
+      "webhookId": "d618603d-946a-4faf-9048-27923cb0e2bd",
+      "notesInFlow": false
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8ae68454-9af6-4e0e-b096-cf3a434f2e87",
+              "name": "name",
+              "value": "=\t={{$json[\"body\"][\"name\"]}}",
+              "type": "string"
+            },
+            {
+              "id": "dabf2bfa-fa0c-45b8-bf71-380abcc88ec6",
+              "name": "email",
+              "value": "={{$json[\"body\"][\"email\"]}}",
+              "type": "string"
+            },
+            {
+              "id": "d81ac842-0703-4969-932a-1dcc3edd508e",
+              "name": "course",
+              "value": "={{$json[\"body\"][\"course\"]}}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "include": "selected",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        220,
+        0
+      ],
+      "id": "2f356221-e1b5-4b1c-ad13-cd933aaeb171",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://bbsqmvmqadjlwcecgpiw.supabase.co/rest/v1/student",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJic3Ftdm1xYWRqbHdjZWNncGl3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE2MzE0MDEsImV4cCI6MjA2NzIwNzQwMX0.ONeBaRR2MbhVdwJRqqTL9cYvDFYvHJXxlffugpm7IJw"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJic3Ftdm1xYWRqbHdjZWNncGl3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE2MzE0MDEsImV4cCI6MjA2NzIwNzQwMX0.ONeBaRR2MbhVdwJRqqTL9cYvDFYvHJXxlffugpm7IJw"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Prefer",
+              "value": "return=representation"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "name",
+              "value": "={{$json.name.replace('=','')}}\n"
+            },
+            {
+              "name": "email",
+              "value": "={{$json.email}}"
+            },
+            {
+              "name": "course",
+              "value": "={{$json.course}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        440,
+        0
+      ],
+      "id": "7cab7c01-5a66-46db-8e68-541518a55541",
+      "name": "HTTP Request",
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"message\": \"Registration successful!\"\n}\n",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        660,
+        0
+      ],
+      "id": "4f9617b8-cbd0-444c-91d3-261721d51e66",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "5955842f-cab0-44ef-88af-c5f6878ff7ae",
+  "meta": {
+    "instanceId": "7ad61f7ffb11720e5be5060cfd8a48776d7cae262f0c4d7565898cad2b1733fb"
+  },
+  "id": "3BYv0O6nQGpe0xm3",
+  "tags": []
+}
